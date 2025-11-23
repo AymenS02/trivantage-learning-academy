@@ -1,0 +1,89 @@
+"use client";
+
+import Link from "next/link";
+import Image from "next/image";
+import { useState } from "react";
+
+export default function Header() {
+  const [open, setOpen] = useState(false);
+
+  const navItems = [
+    { href: "/", label: "Home" },
+    { href: "/programs", label: "Programs" },
+    { href: "/admissions", label: "Admissions" },
+    { href: "/contact", label: "Contact" },
+  ];
+
+  return (
+    <header className="sticky top-0 z-40 border-b border-border bg-background/90 backdrop-blur">
+      <div className="max-w-6xl mx-auto flex items-center justify-between px-6 py-3">
+        <Link href="/" className="flex items-center gap-2">
+          <div className="h-12 w-12 rounded-full bg-primary text-secondary-light flex items-center justify-center text-xs font-bold tracking-tight">
+            <Image src="/logo.avif" alt="Logo" width={36} height={36} />
+          </div>
+          <div className="leading-tight">
+            <p className="text-sm font-semibold text-primary">
+              TriVantage Learning Institute
+            </p>
+            <p className="text-[11px] text-primary/70">
+              Empowering Learners. Building Careers.
+            </p>
+          </div>
+        </Link>
+
+        {/* Desktop nav */}
+        <nav className="hidden md:flex items-center gap-6 text-xs font-medium text-primary">
+          {navItems.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              className="hover:text-accent transition-colors"
+            >
+              {item.label}
+            </Link>
+          ))}
+          <Link
+            href="/admissions"
+            className="rounded-full bg-primary text-secondary-light px-4 py-1.5 text-xs font-semibold hover:bg-primary-light transition-colors"
+          >
+            Apply Now
+          </Link>
+        </nav>
+
+        {/* Mobile menu button */}
+        <button
+          type="button"
+          onClick={() => setOpen(!open)}
+          className="md:hidden inline-flex items-center justify-center rounded-full border border-border bg-surface px-3 py-1.5 text-xs font-medium text-primary"
+        >
+          Menu
+        </button>
+      </div>
+
+      {/* Mobile nav */}
+      {open && (
+        <nav className="md:hidden border-t border-border bg-background">
+          <div className="max-w-6xl mx-auto px-6 py-3 flex flex-col gap-2 text-sm text-primary">
+            {navItems.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                onClick={() => setOpen(false)}
+                className="py-1 hover:text-accent transition-colors"
+              >
+                {item.label}
+              </Link>
+            ))}
+            <Link
+              href="/contact"
+              onClick={() => setOpen(false)}
+              className="mt-2 inline-flex w-max rounded-full bg-primary text-secondary-light px-4 py-1.5 text-xs font-semibold hover:bg-primary-light transition-colors"
+            >
+              Apply Now
+            </Link>
+          </div>
+        </nav>
+      )}
+    </header>
+  );
+}

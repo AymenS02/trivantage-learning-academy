@@ -1,0 +1,29 @@
+@import "tailwindcss";
+
+@theme {
+  /* Primary Colors */
+  --color-primary: hsl(244, 92%, 10%);
+  --color-primary-light: hsl(244, 92%, 20%);
+  --color-primary-dark: hsl(244, 92%, 5%);
+  
+  /* Secondary Colors */
+  --color-secondary: hsl(41, 39%, 73%);
+  --color-secondary-light: hsl(41, 39%, 83%);
+  --color-secondary-dark: hsl(41, 39%, 63%);
+  
+  /* Accent Colors */
+  --color-accent: hsl(44, 49%, 44%);
+  --color-accent-light: hsl(44, 49%, 54%);
+  --color-accent-dark: hsl(44, 49%, 34%);
+  
+  /* Semantic Colors */
+  --color-success: hsl(142, 71%, 45%);
+  --color-warning: hsl(38, 92%, 50%);
+  --color-error: hsl(0, 84%, 60%);
+  --color-info: hsl(199, 89%, 48%);
+  
+  /* Background & Surface */
+  --color-background: hsl(0, 0%, 100%);
+  --color-surface: hsl(0, 0%, 98%);
+  --color-border: hsl(0, 0%, 90%);
+}
