@@ -18,8 +18,8 @@ export default function Header() {
     <header className="sticky top-0 z-40 border-b border-border bg-background/90 backdrop-blur">
       <div className="max-w-6xl mx-auto flex items-center justify-between px-6 py-3">
         <Link href="/" className="flex items-center gap-2">
-          <div className="h-12 w-12 rounded-full bg-primary text-secondary-light flex items-center justify-center text-xs font-bold tracking-tight">
-            <Image src="/logo.avif" alt="Logo" width={36} height={36} />
+          <div className="h-12 w-12 rounded-full text-secondary-light flex items-center justify-center text-xs font-bold tracking-tight">
+            <Image src="/logo.jpg" alt="Logo" width={36} height={36} />
           </div>
           <div className="leading-tight">
             <p className="text-sm font-semibold text-primary">

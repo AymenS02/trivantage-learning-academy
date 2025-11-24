@@ -13,6 +13,7 @@ export default function HomePage() {
   const heroImageRef = useRef(null);
   const heroBadgesRef = useRef(null);
   const whyRef = useRef(null);
+  const valuesRef = useRef(null);
   const aboutRef = useRef(null);
   const contactRef = useRef(null);
 
@@ -73,6 +74,51 @@ export default function HomePage() {
 
       return () => ctx.revert();
     }
+  }, []);
+
+  useEffect(() => {
+    // VALUES section: professional, noticeable animation
+    if (!valuesRef.current) return;
+
+    const ctx = gsap.context(() => {
+      const badges = valuesRef.current.querySelectorAll("[data-value-badge]");
+
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: valuesRef.current,
+          start: "top 75%",
+        },
+        defaults: { ease: "power3.out" },
+      });
+
+      tl.from(valuesRef.current, {
+        opacity: 0,
+        y: 30,
+        duration: 0.7,
+      }).from(
+        badges,
+        {
+          opacity: 0,
+          y: 20,
+          duration: 0.6,
+          stagger: 0.15,
+        },
+        "-=0.2"
+      );
+
+      // Gentle hover-like pulse after appearing
+      badges.forEach((badge, i) => {
+        gsap.to(badge, {
+          scale: 1.02,
+          duration: 2 + i * 0.3,
+          repeat: -1,
+          yoyo: true,
+          ease: "sine.inOut",
+        });
+      });
+    }, valuesRef);
+
+    return () => ctx.revert();
   }, []);
 
   useEffect(() => {
@@ -183,10 +229,7 @@ export default function HomePage() {
               />
             </div>
 
-            <div
-              ref={heroBadgesRef}
-              className="pointer-events-none"
-            >
+            <div ref={heroBadgesRef} className="pointer-events-none">
               <div className="absolute -bottom-6 -left-4 w-36 sm:w-40 rounded-2xl border border-accent/40 bg-primary-dark/90 p-3 text-xs text-secondary-light shadow-lg shadow-primary-dark/60">
                 <p className="font-semibold text-secondary">
                   80+ years collective expertise
@@ -207,11 +250,50 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* WHY CHOOSE US */}
+      {/* ACCESS | EMPOWERMENT | OPPORTUNITY */}
       <section
-        className="bg-surface border-top border-border"
-        ref={whyRef}
+        ref={valuesRef}
+        className="relative border-b border-border bg-primary-dark text-secondary-light"
       >
+        <div className="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.25),_transparent_55%)]" />
+        <div className="relative max-w-6xl mx-auto px-6 py-10 sm:py-12 flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
+          <div className="max-w-md">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.3em] text-secondary-light/80 mb-2">
+              Our Promise
+            </p>
+            <h2 className="text-xl sm:text-2xl font-semibold">
+              Access. Empowerment. Opportunity.
+            </h2>
+            <p className="mt-2 text-xs sm:text-sm text-secondary-light/85">
+              Every program is built to expand access to high-quality learning,
+              empower diverse learners, and create real pathways to opportunity
+              across Canada.
+            </p>
+          </div>
+
+          <div className="flex flex-wrap gap-3 sm:gap-4">
+            {[
+              { label: "Access", sub: "Inclusive & flexible learning" },
+              { label: "Empowerment", sub: "Skills with real impact" },
+              { label: "Opportunity", sub: "Career-focused pathways" },
+            ].map((item) => (
+              <div
+                key={item.label}
+                data-value-badge
+                className="min-w-[150px] rounded-2xl border border-secondary/40 bg-primary-dark/60 px-4 py-3 shadow-sm shadow-primary-dark/50"
+              >
+                <p className="text-sm font-semibold">{item.label}</p>
+                <p className="mt-1 text-[11px] text-secondary-light/80">
+                  {item.sub}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* WHY CHOOSE US */}
+      <section className="bg-surface border-top border-border" ref={whyRef}>
         <div className="max-w-6xl mx-auto px-6 py-14 space-y-8">
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
             <div>
@@ -225,7 +307,7 @@ export default function HomePage() {
               </p>
             </div>
             <p className="text-sm font-medium text-accent">
-              Online • Hybrid • In‑Person • Workforce‑Ready
+              Hybrid • In‑Person • Workforce‑Ready
             </p>
           </div>
 
@@ -233,9 +315,9 @@ export default function HomePage() {
             {[
               "Experienced faculty team",
               "Employer & community partnerships",
-              "Flexible delivery (online, hybrid, in-person)",
+              "Flexible delivery (hybrid, in-person)",
               "Support for newcomers & internationally educated professionals",
-              "Online flexible learning",
+              "Flexible learning",
               "Career-focused certificate courses",
             ].map((item) => (
               <div
@@ -451,7 +533,7 @@ export default function HomePage() {
             <div className="relative h-40 sm:h-48 rounded-2xl overflow-hidden border border-secondary-dark/50 bg-primary-light/20">
               <Image
                 src="/serv2.jpg"
-                alt="Online learning illustration"
+                alt="learning illustration"
                 fill
                 className="object-cover"
                 sizes="(min-width: 1024px) 320px, 100vw"

@@ -2,19 +2,19 @@
 
 @theme {
   /* Primary Colors */
-  --color-primary: hsl(244, 92%, 10%);
-  --color-primary-light: hsl(244, 92%, 20%);
-  --color-primary-dark: hsl(244, 92%, 5%);
+  --color-primary: hsl(202, 94%, 26%);
+  --color-primary-light: hsl(202, 94%, 36%);
+  --color-primary-dark: hsl(202, 94%, 10%);
   
   /* Secondary Colors */
-  --color-secondary: hsl(41, 39%, 73%);
-  --color-secondary-light: hsl(41, 39%, 83%);
-  --color-secondary-dark: hsl(41, 39%, 63%);
+  --color-secondary: hsl(202, 49%, 52%);
+  --color-secondary-light: hsl(202, 49%, 72%);
+  --color-secondary-dark: hsl(202, 49%, 42%);
   
   /* Accent Colors */
-  --color-accent: hsl(44, 49%, 44%);
-  --color-accent-light: hsl(44, 49%, 54%);
-  --color-accent-dark: hsl(44, 49%, 34%);
+  --color-accent: hsl(48, 55%, 24%);
+  --color-accent-light: hsl(48, 15%, 98%);
+  --color-accent-dark: hsl(48, 15%, 84%);
   
   /* Semantic Colors */
   --color-success: hsl(142, 71%, 45%);
