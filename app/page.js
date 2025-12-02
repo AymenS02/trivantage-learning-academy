@@ -39,7 +39,7 @@ export default function HomePage() {
             "-=0.6"
           )
           .from(
-            heroBadgesRef.current?.children || [],
+            heroBadgesRef.current?. children || [],
             {
               opacity: 0,
               y: 10,
@@ -56,7 +56,7 @@ export default function HomePage() {
 
   useEffect(() => {
     // WHY CHOOSE US cards – scroll reveal
-    if (whyRef.current) {
+    if (whyRef. current) {
       const ctx = gsap.context(() => {
         const cards = whyRef.current.querySelectorAll("[data-why-card]");
         gsap.from(cards, {
@@ -78,9 +78,9 @@ export default function HomePage() {
 
   useEffect(() => {
     // VALUES section: professional, noticeable animation
-    if (!valuesRef.current) return;
+    if (! valuesRef.current) return;
 
-    const ctx = gsap.context(() => {
+    const ctx = gsap. context(() => {
       const badges = valuesRef.current.querySelectorAll("[data-value-badge]");
 
       const tl = gsap.timeline({
@@ -95,7 +95,7 @@ export default function HomePage() {
         opacity: 0,
         y: 30,
         duration: 0.7,
-      }).from(
+      }). from(
         badges,
         {
           opacity: 0,
@@ -124,7 +124,7 @@ export default function HomePage() {
   useEffect(() => {
     // ABOUT + CONTACT sections subtle scroll-in
     const setupSectionReveal = (ref) => {
-      if (!ref.current) return;
+      if (! ref. current) return;
       const ctx = gsap.context(() => {
         gsap.from(ref.current, {
           scrollTrigger: {
@@ -144,31 +144,31 @@ export default function HomePage() {
     const contactCtx = setupSectionReveal(contactRef);
 
     return () => {
-      aboutCtx?.revert();
+      aboutCtx?. revert();
       contactCtx?.revert();
     };
   }, []);
 
   useEffect(() => {
     // Gentle floating/parallax for hero badges (infinite, very subtle)
-    if (!heroBadgesRef.current) return;
+    if (! heroBadgesRef.current) return;
 
     const ctx = gsap.context(() => {
-      const badges = heroBadgesRef.current.children;
+      const badges = heroBadgesRef. current.children;
       gsap.to(badges[0], {
         y: -4,
         repeat: -1,
         yoyo: true,
         duration: 2.4,
-        ease: "sine.inOut",
+        ease: "sine. inOut",
       });
       if (badges[1]) {
-        gsap.to(badges[1], {
+        gsap. to(badges[1], {
           y: 4,
           repeat: -1,
           yoyo: true,
           duration: 2.8,
-          ease: "sine.inOut",
+          ease: "sine. inOut",
         });
       }
     }, heroBadgesRef);
@@ -183,36 +183,36 @@ export default function HomePage() {
         <div className="absolute inset-0 bg-gradient-to-br from-primary via-primary-light/80 to-primary-dark/90 opacity-95" />
         <div className="relative max-w-6xl mx-auto px-6 pt-20 pb-16 grid gap-10 md:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)] items-center">
           <div ref={heroRef} className="space-y-6">
-            <p className="inline-flex items-center rounded-full border border-accent/40 bg-accent-dark/40 px-3 py-1 text-xs font-semibold uppercase tracking-[0.15em] text-secondary-light">
+            <p className="inline-flex items-center rounded-full border border-accent/40 bg-accent-dark/40 px-3 py-1 text-sm font-semibold uppercase tracking-[0.15em] text-secondary-light">
               TriVantage Learning Institute
             </p>
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-semibold leading-tight">
-              Empowering Learners. <br className="hidden sm:block" />
-              Building Careers. <br className="hidden sm:block" />
-              <span className="text-secondary-light">Creating Pathways.</span>
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-semibold leading-tight">
+              Empowering Learners.  <br className="hidden sm:block" />
+              Building Careers.  <br className="hidden sm:block" />
+              <span className="text-secondary-light">Creating Pathways. </span>
             </h1>
-            <p className="max-w-xl text-sm sm:text-base text-secondary-light/90">
+            <p className="max-w-xl text-base sm:text-lg text-secondary-light/90">
               TriVantage Learning Institute delivers career-focused education
               with 80+ years of collective expertise in healthcare, education,
-              and leadership.
+              and leadership. 
             </p>
 
             <div className="flex flex-wrap gap-3">
               <Link
                 href="/contact"
-                className="inline-flex items-center justify-center rounded-full bg-secondary px-6 py-2.5 text-sm font-semibold text-primary hover:bg-secondary-light transition"
+                className="inline-flex items-center justify-center rounded-full bg-secondary px-6 py-2. 5 text-base font-semibold text-primary hover:bg-secondary-light transition"
               >
                 APPLY NOW
               </Link>
               <Link
                 href="/programs"
-                className="inline-flex items-center justify-center rounded-full border border-secondary/70 bg-primary-dark/40 px-6 py-2.5 text-sm font-semibold text-secondary-light hover:bg-primary-light/60 transition"
+                className="inline-flex items-center justify-center rounded-full border border-secondary/70 bg-primary-dark/40 px-6 py-2.5 text-base font-semibold text-secondary-light hover:bg-primary-light/60 transition"
               >
                 EXPLORE PROGRAMS
               </Link>
             </div>
 
-            <p className="text-xs sm:text-sm text-secondary-light/80">
+            <p className="text-sm sm:text-base text-secondary-light/80">
               Virtual training certificate courses for your future.
             </p>
           </div>
@@ -230,19 +230,19 @@ export default function HomePage() {
             </div>
 
             <div ref={heroBadgesRef} className="pointer-events-none">
-              <div className="absolute -bottom-6 -left-4 w-36 sm:w-40 rounded-2xl border border-accent/40 bg-primary-dark/90 p-3 text-xs text-secondary-light shadow-lg shadow-primary-dark/60">
+              <div className="absolute -bottom-6 -left-4 w-36 sm:w-40 rounded-2xl border border-accent/40 bg-primary-dark/90 p-3 text-sm text-secondary-light shadow-lg shadow-primary-dark/60">
                 <p className="font-semibold text-secondary">
                   80+ years collective expertise
                 </p>
-                <p className="text-[11px] text-secondary-light/90">
+                <p className="text-xs text-secondary-light/90">
                   Healthcare • Education • Leadership
                 </p>
               </div>
 
-              <div className="absolute -top-6 -right-4 w-32 sm:w-36 rounded-2xl border border-secondary/40 bg-secondary-dark/90 p-2.5 text-[11px] text-primary-dark shadow-lg shadow-primary-dark/60">
+              <div className="absolute -top-6 -right-4 w-32 sm:w-36 rounded-2xl border border-secondary/40 bg-secondary-dark/90 p-2. 5 text-xs text-primary-dark shadow-lg shadow-primary-dark/60">
                 <p className="font-semibold">Virtual Training</p>
-                <p className="text-[10px]">
-                  Certificate courses for your future.
+                <p className="text-[11px]">
+                  Certificate courses for your future. 
                 </p>
               </div>
             </div>
@@ -258,16 +258,16 @@ export default function HomePage() {
         <div className="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.25),_transparent_55%)]" />
         <div className="relative max-w-6xl mx-auto px-6 py-10 sm:py-12 flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
           <div className="max-w-md">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.3em] text-secondary-light/80 mb-2">
+            <p className="text-xs font-semibold uppercase tracking-[0. 3em] text-secondary-light/80 mb-2">
               Our Promise
             </p>
-            <h2 className="text-xl sm:text-2xl font-semibold">
-              Access. Empowerment. Opportunity.
+            <h2 className="text-2xl sm:text-3xl font-semibold">
+              Access.  Empowerment. Opportunity. 
             </h2>
-            <p className="mt-2 text-xs sm:text-sm text-secondary-light/85">
+            <p className="mt-2 text-sm sm:text-base text-secondary-light/85">
               Every program is built to expand access to high-quality learning,
               empower diverse learners, and create real pathways to opportunity
-              across Canada.
+              across Canada. 
             </p>
           </div>
 
@@ -282,8 +282,8 @@ export default function HomePage() {
                 data-value-badge
                 className="min-w-[150px] rounded-2xl border border-secondary/40 bg-primary-dark/60 px-4 py-3 shadow-sm shadow-primary-dark/50"
               >
-                <p className="text-sm font-semibold">{item.label}</p>
-                <p className="mt-1 text-[11px] text-secondary-light/80">
+                <p className="text-base font-semibold">{item.label}</p>
+                <p className="mt-1 text-xs text-secondary-light/80">
                   {item.sub}
                 </p>
               </div>
@@ -297,16 +297,16 @@ export default function HomePage() {
         <div className="max-w-6xl mx-auto px-6 py-14 space-y-8">
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
             <div>
-              <h2 className="text-2xl sm:text-3xl font-semibold text-primary">
+              <h2 className="text-3xl sm:text-4xl font-semibold text-primary">
                 Why Choose Us?
               </h2>
-              <p className="mt-2 max-w-xl text-sm text-primary/80">
+              <p className="mt-2 max-w-xl text-base text-primary/80">
                 Designed for busy learners, newcomers, and internationally
                 educated professionals who want flexible, workforce-ready
                 education.
               </p>
             </div>
-            <p className="text-sm font-medium text-accent">
+            <p className="text-base font-medium text-accent">
               Hybrid • In‑Person • Workforce‑Ready
             </p>
           </div>
@@ -328,7 +328,7 @@ export default function HomePage() {
                 <div className="absolute -top-3 -left-3 h-8 w-8 rounded-full bg-accent flex items-center justify-center text-xs font-bold text-primary-dark shadow-sm">
                   ✔
                 </div>
-                <p className="pl-5 text-sm font-medium text-primary">
+                <p className="pl-5 text-base font-medium text-primary">
                   {item}
                 </p>
               </div>
@@ -336,12 +336,12 @@ export default function HomePage() {
           </div>
 
           <div className="flex flex-wrap items-center justify-between gap-3 mt-4">
-            <p className="text-xs sm:text-sm text-primary/70">
+            <p className="text-sm sm:text-base text-primary/70">
               Virtual training certificate courses tailored for your future.
             </p>
             <Link
               href="/programs"
-              className="inline-flex items-center text-sm font-semibold text-accent hover:text-accent-light"
+              className="inline-flex items-center text-base font-semibold text-accent hover:text-accent-light"
             >
               Start Now
               <span className="ml-1">↗</span>
@@ -357,10 +357,10 @@ export default function HomePage() {
       >
         <div className="max-w-6xl mx-auto px-6 py-14 grid gap-10 md:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)] items-center">
           <div>
-            <h2 className="text-2xl sm:text-3xl font-semibold text-primary mb-4">
+            <h2 className="text-3xl sm:text-4xl font-semibold text-primary mb-4">
               About Us
             </h2>
-            <p className="text-sm text-primary/80 mb-4">
+            <p className="text-base text-primary/80 mb-4">
               <span className="font-semibold">Our Story:</span> Founded to
               empower learners with practical, inclusive education that leads
               to real career success.
@@ -368,14 +368,14 @@ export default function HomePage() {
 
             <div className="grid gap-4 sm:grid-cols-2 mb-5">
               <div className="rounded-2xl border border-border bg-surface p-4">
-                <h3 className="text-sm font-semibold text-primary">Mission</h3>
-                <p className="mt-1 text-xs text-primary/80">
-                  Deliver accessible, workforce-ready programs.
+                <h3 className="text-base font-semibold text-primary">Mission</h3>
+                <p className="mt-1 text-sm text-primary/80">
+                  Deliver accessible, workforce-ready programs. 
                 </p>
               </div>
               <div className="rounded-2xl border border-border bg-surface p-4">
-                <h3 className="text-sm font-semibold text-primary">Vision</h3>
-                <p className="mt-1 text-xs text-primary/80">
+                <h3 className="text-base font-semibold text-primary">Vision</h3>
+                <p className="mt-1 text-sm text-primary/80">
                   To be a leader in innovative education pathways across
                   Canada.
                 </p>
@@ -383,34 +383,34 @@ export default function HomePage() {
             </div>
 
             <div className="rounded-2xl border border-border bg-surface p-4 mb-4">
-              <h3 className="text-sm font-semibold text-primary">Our Team</h3>
-              <p className="mt-1 text-xs text-primary/80">
+              <h3 className="text-base font-semibold text-primary">Our Team</h3>
+              <p className="mt-1 text-sm text-primary/80">
                 Over 80 years of combined expertise in healthcare, compliance,
                 cultural competency, and education.
               </p>
             </div>
 
-            <div className="flex flex-wrap items-center gap-2 text-xs">
+            <div className="flex flex-wrap items-center gap-2 text-sm">
               <span className="font-semibold text-primary/80">
                 Core Values:
               </span>
-              <span className="rounded-full bg-secondary-light px-3 py-1 text-primary text-[11px]">
+              <span className="rounded-full bg-secondary-light px-3 py-1 text-primary text-xs">
                 Inclusivity
               </span>
-              <span className="rounded-full bg-secondary-light px-3 py-1 text-primary text-[11px]">
+              <span className="rounded-full bg-secondary-light px-3 py-1 text-primary text-xs">
                 Integrity
               </span>
-              <span className="rounded-full bg-secondary-light px-3 py-1 text-primary text-[11px]">
+              <span className="rounded-full bg-secondary-light px-3 py-1 text-primary text-xs">
                 Excellence
               </span>
-              <span className="rounded-full bg-secondary-light px-3 py-1 text-primary text-[11px]">
+              <span className="rounded-full bg-secondary-light px-3 py-1 text-primary text-xs">
                 Empowerment
               </span>
             </div>
 
             <Link
               href="/about"
-              className="mt-5 inline-flex text-sm font-semibold text-accent hover:text-accent-light"
+              className="mt-5 inline-flex text-base font-semibold text-accent hover:text-accent-light"
             >
               Learn more about TriVantage
             </Link>
@@ -446,15 +446,15 @@ export default function HomePage() {
       >
         <div className="max-w-6xl mx-auto px-6 py-14 grid gap-10 md:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] items-start">
           <div>
-            <h2 className="text-2xl sm:text-3xl font-semibold text-secondary mb-2">
+            <h2 className="text-3xl sm:text-4xl font-semibold text-secondary mb-2">
               Contact Us
             </h2>
-            <p className="text-sm text-secondary-light/90 mb-4">
+            <p className="text-base text-secondary-light/90 mb-4">
               Have questions about our programs, admissions, or corporate
-              training? Reach out and our team will follow up.
+              training?  Reach out and our team will follow up. 
             </p>
 
-            <form className="space-y-4 text-xs sm:text-sm">
+            <form className="space-y-4 text-sm sm:text-base">
               <div className="grid gap-3 sm:grid-cols-2">
                 <div>
                   <label className="block mb-1 text-secondary-light/90">
@@ -515,14 +515,14 @@ export default function HomePage() {
 
               <button
                 type="submit"
-                className="inline-flex items-center justify-center rounded-full bg-secondary px-6 py-2.5 text-sm font-semibold text-primary hover:bg-secondary-light transition"
+                className="inline-flex items-center justify-center rounded-full bg-secondary px-6 py-2.5 text-base font-semibold text-primary hover:bg-secondary-light transition"
               >
                 Submit
               </button>
             </form>
           </div>
 
-          <div className="space-y-4 text-xs sm:text-sm">
+          <div className="space-y-4 text-sm sm:text-base">
             <p className="font-semibold text-secondary">
               Virtual Training Certificate Courses for Your Future
             </p>
