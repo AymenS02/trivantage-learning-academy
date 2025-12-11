@@ -11,6 +11,7 @@ export default function AdminEnrollments() {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState("pending");
   const [updating, setUpdating] = useState(null);
+  const [selectedEnrollment, setSelectedEnrollment] = useState(null);
 
   useEffect(() => {
     // Check if user is logged in and is admin
@@ -263,11 +264,7 @@ export default function AdminEnrollments() {
                             </>
                           )}
                           <button
-                            onClick={() =>
-                              alert(
-                                JSON.stringify(enrollment, null, 2)
-                              )
-                            }
+                            onClick={() => setSelectedEnrollment(enrollment)}
                             className="rounded-lg border border-border bg-background text-primary px-3 py-1.5 text-xs font-semibold hover:bg-secondary-light/60 transition"
                           >
                             View Details
@@ -281,6 +278,162 @@ export default function AdminEnrollments() {
             </div>
           )}
         </div>
+
+        {/* Details Modal */}
+        {selectedEnrollment && (
+          <div className="fixed inset-0 bg-primary-dark/50 flex items-center justify-center z-50 p-4">
+            <div className="bg-surface rounded-2xl border border-border shadow-lg max-w-3xl w-full max-h-[90vh] overflow-y-auto">
+              <div className="sticky top-0 bg-surface border-b border-border px-6 py-4 flex items-center justify-between">
+                <h2 className="text-xl font-semibold text-primary">
+                  Enrollment Details
+                </h2>
+                <button
+                  onClick={() => setSelectedEnrollment(null)}
+                  className="text-primary/70 hover:text-primary text-2xl leading-none"
+                >
+                  ×
+                </button>
+              </div>
+              <div className="p-6 space-y-6">
+                <section>
+                  <h3 className="text-sm font-semibold text-primary mb-3">
+                    Personal Information
+                  </h3>
+                  <div className="grid gap-3 sm:grid-cols-2 text-sm">
+                    <div>
+                      <p className="text-primary/70">Name</p>
+                      <p className="text-primary">
+                        {selectedEnrollment.firstName} {selectedEnrollment.lastName}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-primary/70">Email</p>
+                      <p className="text-primary">{selectedEnrollment.email}</p>
+                    </div>
+                    {selectedEnrollment.phone && (
+                      <div>
+                        <p className="text-primary/70">Phone</p>
+                        <p className="text-primary">{selectedEnrollment.phone}</p>
+                      </div>
+                    )}
+                    {selectedEnrollment.gender && (
+                      <div>
+                        <p className="text-primary/70">Gender</p>
+                        <p className="text-primary">{selectedEnrollment.gender}</p>
+                      </div>
+                    )}
+                  </div>
+                </section>
+
+                {selectedEnrollment.selectedCourse && (
+                  <section className="border-t border-border pt-4">
+                    <h3 className="text-sm font-semibold text-primary mb-3">
+                      Course Selection
+                    </h3>
+                    <div className="rounded-lg border border-border bg-background p-4">
+                      <p className="text-sm font-semibold text-primary mb-1">
+                        {selectedEnrollment.selectedCourse.title}
+                      </p>
+                      <p className="text-xs text-primary/70">
+                        {selectedEnrollment.selectedCourse.category} • $
+                        {selectedEnrollment.selectedCourse.price}
+                      </p>
+                    </div>
+                  </section>
+                )}
+
+                {(selectedEnrollment.address || selectedEnrollment.city || selectedEnrollment.country) && (
+                  <section className="border-t border-border pt-4">
+                    <h3 className="text-sm font-semibold text-primary mb-3">
+                      Address
+                    </h3>
+                    <div className="text-sm text-primary space-y-1">
+                      {selectedEnrollment.addressMultiline && (
+                        <p>{selectedEnrollment.addressMultiline}</p>
+                      )}
+                      {selectedEnrollment.address && <p>{selectedEnrollment.address}</p>}
+                      <p>
+                        {[
+                          selectedEnrollment.city,
+                          selectedEnrollment.postalCode,
+                          selectedEnrollment.country,
+                        ]
+                          .filter(Boolean)
+                          .join(", ")}
+                      </p>
+                    </div>
+                  </section>
+                )}
+
+                {(selectedEnrollment.workExperience || selectedEnrollment.educationBackground) && (
+                  <section className="border-t border-border pt-4">
+                    <h3 className="text-sm font-semibold text-primary mb-3">
+                      Background
+                    </h3>
+                    <div className="space-y-3 text-sm">
+                      {selectedEnrollment.workExperience && (
+                        <div>
+                          <p className="text-primary/70 mb-1">Work Experience</p>
+                          <p className="text-primary">
+                            {selectedEnrollment.workExperience}
+                          </p>
+                        </div>
+                      )}
+                      {selectedEnrollment.educationBackground && (
+                        <div>
+                          <p className="text-primary/70 mb-1">Education</p>
+                          <p className="text-primary">
+                            {selectedEnrollment.educationBackground}
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  </section>
+                )}
+
+                {selectedEnrollment.specialNeeds && (
+                  <section className="border-t border-border pt-4">
+                    <h3 className="text-sm font-semibold text-primary mb-3">
+                      Special Needs
+                    </h3>
+                    <p className="text-sm text-primary">
+                      {selectedEnrollment.specialNeeds}
+                    </p>
+                  </section>
+                )}
+
+                <section className="border-t border-border pt-4">
+                  <h3 className="text-sm font-semibold text-primary mb-3">
+                    Submission Details
+                  </h3>
+                  <div className="grid gap-3 sm:grid-cols-2 text-sm">
+                    <div>
+                      <p className="text-primary/70">Status</p>
+                      <span
+                        className={[
+                          "inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold capitalize mt-1",
+                          selectedEnrollment.status === "pending"
+                            ? "bg-secondary-light text-primary"
+                            : selectedEnrollment.status === "accepted"
+                            ? "bg-accent/20 text-accent"
+                            : "bg-error/20 text-error",
+                        ].join(" ")}
+                      >
+                        {selectedEnrollment.status}
+                      </span>
+                    </div>
+                    <div>
+                      <p className="text-primary/70">Submitted On</p>
+                      <p className="text-primary">
+                        {new Date(selectedEnrollment.createdAt).toLocaleString()}
+                      </p>
+                    </div>
+                  </div>
+                </section>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </main>
   );

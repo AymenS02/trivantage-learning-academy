@@ -74,7 +74,10 @@ export default function ProgramsPage() {
   // Helper function to get enrollment status for a course
   const getEnrollmentStatus = (courseId) => {
     const enrollment = enrollments.find(
-      (e) => e.selectedCourse?._id === courseId || e.selectedCourse === courseId
+      (e) => {
+        const enrollmentCourseId = e.selectedCourse?._id || e.selectedCourse;
+        return enrollmentCourseId?.toString() === courseId;
+      }
     );
     return enrollment ? enrollment.status : null;
   };

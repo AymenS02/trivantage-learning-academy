@@ -82,7 +82,11 @@ export async function PUT(request, { params }) {
       // If user exists in system, add course to their enrolled courses
       if (enrollment.userId) {
         const user = await User.findById(enrollment.userId).session(session);
-        if (user && !user.coursesEnrolled.includes(enrollment.selectedCourse)) {
+        const courseIdStr = enrollment.selectedCourse.toString();
+        const alreadyEnrolled = user && user.coursesEnrolled.some(
+          (courseId) => courseId.toString() === courseIdStr
+        );
+        if (user && !alreadyEnrolled) {
           user.coursesEnrolled.push(enrollment.selectedCourse);
           await user.save({ session });
         }

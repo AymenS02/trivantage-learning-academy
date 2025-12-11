@@ -52,7 +52,10 @@ export default function CourseDashboard() {
 
       if (enrollmentData.success) {
         const userEnrollment = enrollmentData.data.find(
-          (e) => e.selectedCourse?._id === courseId || e.selectedCourse === courseId
+          (e) => {
+            const enrollmentCourseId = e.selectedCourse?._id || e.selectedCourse;
+            return enrollmentCourseId?.toString() === courseId;
+          }
         );
 
         if (userEnrollment) {
