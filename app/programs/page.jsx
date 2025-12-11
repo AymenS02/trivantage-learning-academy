@@ -20,12 +20,26 @@ export default function ProgramsPage() {
   const [activeFilter, setActiveFilter] = useState("all");
   const [programs, setPrograms] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState(null);
+  const [enrollments, setEnrollments] = useState([]);
   const cardsRef = useRef(null);
   const heroRef = useRef(null);
 
   useEffect(() => {
+    // Check if user is logged in
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
     fetchCourses();
   }, []);
+
+  useEffect(() => {
+    if (user) {
+      fetchEnrollments();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]);
 
   const fetchCourses = async () => {
     try {
@@ -40,6 +54,32 @@ export default function ProgramsPage() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const fetchEnrollments = async () => {
+    if (!user) return;
+    
+    try {
+      const response = await fetch(`/api/enrollment-requests?userId=${user._id}`);
+      const data = await response.json();
+
+      if (data.success) {
+        setEnrollments(data.data);
+      }
+    } catch (error) {
+      console.error("Error fetching enrollments:", error);
+    }
+  };
+
+  // Helper function to get enrollment status for a course
+  const getEnrollmentStatus = (courseId) => {
+    const enrollment = enrollments.find(
+      (e) => {
+        const enrollmentCourseId = e.selectedCourse?._id || e.selectedCourse;
+        return enrollmentCourseId?.toString() === courseId;
+      }
+    );
+    return enrollment ? enrollment.status : null;
   };
 
   const filteredPrograms = useMemo(() => {
@@ -203,15 +243,38 @@ export default function ProgramsPage() {
                   </div>
 
                   <div className="mt-2 flex items-center justify-between gap-2">
-                    <Link
-                      href={{
-                        pathname: "/contact",
-                        query: { program: program.title },
-                      }}
-                      className="inline-flex items-center rounded-full bg-primary text-secondary-light px-3 py-1.5 text-[11px] font-semibold hover:bg-primary-light"
-                    >
-                      Enroll Now
-                    </Link>
+                    {(() => {
+                      const enrollmentStatus = getEnrollmentStatus(program._id);
+                      
+                      if (enrollmentStatus === "accepted") {
+                        return (
+                          <Link
+                            href={`/courses/${program._id}/dashboard`}
+                            className="inline-flex items-center rounded-full bg-accent text-secondary-light px-3 py-1.5 text-[11px] font-semibold hover:bg-accent/80"
+                          >
+                            Dashboard
+                          </Link>
+                        );
+                      } else if (enrollmentStatus === "pending") {
+                        return (
+                          <span className="inline-flex items-center rounded-full bg-secondary-light border border-border text-primary px-3 py-1.5 text-[11px] font-semibold">
+                            Pending
+                          </span>
+                        );
+                      } else {
+                        return (
+                          <Link
+                            href={{
+                              pathname: "/admissions",
+                              query: { program: program.title },
+                            }}
+                            className="inline-flex items-center rounded-full bg-primary text-secondary-light px-3 py-1.5 text-[11px] font-semibold hover:bg-primary-light"
+                          >
+                            Enroll Now
+                          </Link>
+                        );
+                      }
+                    })()}
                   </div>
                 </article>
               ))
