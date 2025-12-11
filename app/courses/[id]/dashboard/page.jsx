@@ -27,6 +27,7 @@ export default function CourseDashboard() {
     setUser(userData);
     
     fetchCourseAndEnrollment(userData);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [courseId, router]);
 
   const fetchCourseAndEnrollment = async (userData) => {

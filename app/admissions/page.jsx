@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import gsap from "gsap";
 
-export default function AdmissionsPage() {
+function AdmissionsForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const heroRef = useRef(null);
@@ -648,5 +648,17 @@ export default function AdmissionsPage() {
         </form>
       </section>
     </main>
+  );
+}
+
+export default function AdmissionsPage() {
+  return (
+    <Suspense fallback={
+      <main className="bg-background text-primary-dark min-h-screen flex items-center justify-center">
+        <p className="text-primary/70">Loading...</p>
+      </main>
+    }>
+      <AdmissionsForm />
+    </Suspense>
   );
 }

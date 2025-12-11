@@ -33,6 +33,7 @@ export default function AdminEnrollments() {
     if (user) {
       fetchEnrollments();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, filter]);
 
   const fetchEnrollments = async () => {

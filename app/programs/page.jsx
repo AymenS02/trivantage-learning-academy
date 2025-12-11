@@ -38,6 +38,7 @@ export default function ProgramsPage() {
     if (user) {
       fetchEnrollments();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
   const fetchCourses = async () => {
