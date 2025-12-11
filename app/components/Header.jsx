@@ -6,16 +6,15 @@ import { useState, useEffect } from "react";
 
 export default function Header() {
   const [open, setOpen] = useState(false);
-  const [user, setUser] = useState(null);
-
-  useEffect(() => {
+  const [user, setUser] = useState(() => {
     if (typeof window !== "undefined") {
       const storedUser = localStorage.getItem("user");
       if (storedUser) {
-        setUser(JSON.parse(storedUser));
+        return JSON.parse(storedUser);
       }
     }
-  }, []);
+    return null;
+  });
 
   const handleLogout = () => {
     localStorage.removeItem("user");
