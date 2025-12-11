@@ -2,10 +2,26 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function Header() {
   const [open, setOpen] = useState(false);
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const storedUser = localStorage.getItem("user");
+      if (storedUser) {
+        setUser(JSON.parse(storedUser));
+      }
+    }
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    setUser(null);
+    window.location.href = "/";
+  };
 
   const navItems = [
     { href: "/", label: "Home" },
@@ -42,12 +58,42 @@ export default function Header() {
               {item.label}
             </Link>
           ))}
-          <Link
-            href="/admissions"
-            className="rounded-full bg-primary text-secondary-light px-4 py-1.5 text-xs font-semibold hover:bg-primary-light transition-colors"
-          >
-            Apply Now
-          </Link>
+          {user ? (
+            <>
+              {user.role === "admin" && (
+                <Link
+                  href="/admin"
+                  className="hover:text-accent transition-colors"
+                >
+                  Admin
+                </Link>
+              )}
+              <span className="text-primary/70">
+                {user.firstName}
+              </span>
+              <button
+                onClick={handleLogout}
+                className="rounded-full border border-border bg-surface px-4 py-1.5 text-xs font-medium hover:bg-secondary-light/60 transition-colors"
+              >
+                Logout
+              </button>
+            </>
+          ) : (
+            <>
+              <Link
+                href="/login"
+                className="hover:text-accent transition-colors"
+              >
+                Login
+              </Link>
+              <Link
+                href="/signup"
+                className="rounded-full bg-primary text-secondary-light px-4 py-1.5 text-xs font-semibold hover:bg-primary-light transition-colors"
+              >
+                Sign Up
+              </Link>
+            </>
+          )}
         </nav>
 
         {/* Mobile menu button */}
@@ -74,13 +120,48 @@ export default function Header() {
                 {item.label}
               </Link>
             ))}
-            <Link
-              href="/contact"
-              onClick={() => setOpen(false)}
-              className="mt-2 inline-flex w-max rounded-full bg-primary text-secondary-light px-4 py-1.5 text-xs font-semibold hover:bg-primary-light transition-colors"
-            >
-              Apply Now
-            </Link>
+            {user ? (
+              <>
+                {user.role === "admin" && (
+                  <Link
+                    href="/admin"
+                    onClick={() => setOpen(false)}
+                    className="py-1 hover:text-accent transition-colors"
+                  >
+                    Admin
+                  </Link>
+                )}
+                <span className="py-1 text-primary/70">
+                  {user.firstName} {user.lastName}
+                </span>
+                <button
+                  onClick={() => {
+                    handleLogout();
+                    setOpen(false);
+                  }}
+                  className="mt-2 inline-flex w-max rounded-full border border-border bg-surface px-4 py-1.5 text-xs font-medium hover:bg-secondary-light/60 transition-colors"
+                >
+                  Logout
+                </button>
+              </>
+            ) : (
+              <>
+                <Link
+                  href="/login"
+                  onClick={() => setOpen(false)}
+                  className="py-1 hover:text-accent transition-colors"
+                >
+                  Login
+                </Link>
+                <Link
+                  href="/signup"
+                  onClick={() => setOpen(false)}
+                  className="mt-2 inline-flex w-max rounded-full bg-primary text-secondary-light px-4 py-1.5 text-xs font-semibold hover:bg-primary-light transition-colors"
+                >
+                  Sign Up
+                </Link>
+              </>
+            )}
           </div>
         </nav>
       )}

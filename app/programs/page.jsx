@@ -8,87 +8,44 @@ import Sidebar from "../components/Sidebar";
 
 gsap.registerPlugin(ScrollTrigger);
 
-// Example program data – replace with real content later
-const PROGRAMS = [
-  {
-    id: "hc-assistant",
-    title: "Healthcare Support Assistant Certificate",
-    category: "Healthcare",
-    level: "Certificate",
-    duration: "12 weeks",
-    delivery: "Online / Hybrid",
-    description:
-      "Develop foundational skills to support patients and clinical teams in diverse healthcare settings.",
-  },
-  {
-    id: "hc-compliance",
-    title: "Healthcare Compliance & Quality",
-    category: "Healthcare",
-    level: "Professional Course",
-    duration: "8 weeks",
-    delivery: "Online",
-    description:
-      "Learn regulatory, risk, and quality frameworks for Canadian healthcare environments.",
-  },
-  {
-    id: "leadership-foundations",
-    title: "Foundations of Leadership in Healthcare",
-    category: "Leadership",
-    level: "Certificate",
-    duration: "10 weeks",
-    delivery: "Online",
-    description:
-      "Strengthen your leadership, communication, and team management skills in complex care environments.",
-  },
-  {
-    id: "newcomer-bridge",
-    title: "Newcomer Professional Bridging Program",
-    category: "Newcomers",
-    level: "Bridge Program",
-    duration: "14 weeks",
-    delivery: "Hybrid",
-    description:
-      "Support internationally educated professionals with Canadian workplace skills and career navigation.",
-  },
-  {
-    id: "short-communication",
-    title: "Effective Workplace Communication",
-    category: "Short Courses",
-    level: "Short Course",
-    duration: "4 weeks",
-    delivery: "Online (Evenings)",
-    description:
-      "Enhance everyday communication, documentation, and professional writing skills.",
-  },
-  {
-    id: "short-cultural",
-    title: "Cultural Competency in Care",
-    category: "Short Courses",
-    level: "Short Course",
-    duration: "4 weeks",
-    delivery: "Online",
-    description:
-      "Build cultural humility and person-centred approaches when working with diverse communities.",
-  },
-];
-
 const FILTERS = [
   { key: "all", label: "All Programs" },
   { key: "Healthcare", label: "Healthcare" },
   { key: "Leadership", label: "Leadership" },
-  { key: "Newcomers", label: "Newcomer Pathways" },
-  { key: "Short Courses", label: "Short Courses" },
+  { key: "Newcomer Pathways", label: "Newcomer Pathways" },
+  { key: "Other", label: "Other" },
 ];
 
 export default function ProgramsPage() {
   const [activeFilter, setActiveFilter] = useState("all");
+  const [programs, setPrograms] = useState([]);
+  const [loading, setLoading] = useState(true);
   const cardsRef = useRef(null);
   const heroRef = useRef(null);
 
+  useEffect(() => {
+    fetchCourses();
+  }, []);
+
+  const fetchCourses = async () => {
+    try {
+      const response = await fetch("/api/courses?status=published&limit=1000");
+      const data = await response.json();
+
+      if (data.success) {
+        setPrograms(data.data);
+      }
+    } catch (error) {
+      console.error("Error fetching courses:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const filteredPrograms = useMemo(() => {
-    if (activeFilter === "all") return PROGRAMS;
-    return PROGRAMS.filter((p) => p.category === activeFilter);
-  }, [activeFilter]);
+    if (activeFilter === "all") return programs;
+    return programs.filter((p) => p.category === activeFilter);
+  }, [activeFilter, programs]);
 
   // Hero entrance animation
   useEffect(() => {
@@ -200,62 +157,65 @@ export default function ProgramsPage() {
             ref={cardsRef}
             className="grid gap-4 sm:grid-cols-2"
           >
-            {filteredPrograms.map((program) => (
-              <article
-                key={program.id}
-                data-program-card
-                className="flex flex-col justify-between rounded-2xl border border-border bg-surface p-4 shadow-sm hover:shadow-md transition-shadow"
-              >
-                <div>
-                  <div className="flex items-center justify-between gap-2 mb-2">
-                    <div>
-                      <h2 className="text-sm font-semibold text-primary">
-                        {program.title}
-                      </h2>
-                      <p className="text-[11px] text-primary/70">
-                        {program.category} • {program.level}
-                      </p>
+            {loading ? (
+              <p className="text-sm text-primary/70">Loading courses...</p>
+            ) : filteredPrograms.length > 0 ? (
+              filteredPrograms.map((program) => (
+                <article
+                  key={program._id}
+                  data-program-card
+                  className="flex flex-col justify-between rounded-2xl border border-border bg-surface p-4 shadow-sm hover:shadow-md transition-shadow"
+                >
+                  <div>
+                    <div className="flex items-center justify-between gap-2 mb-2">
+                      <div>
+                        <h2 className="text-sm font-semibold text-primary">
+                          {program.title}
+                        </h2>
+                        <p className="text-[11px] text-primary/70">
+                          {program.category}
+                        </p>
+                      </div>
+                      <span className="inline-flex items-center rounded-full bg-secondary-light px-2.5 py-1 text-[10px] font-semibold text-primary">
+                        {program.duration}
+                      </span>
                     </div>
-                    <span className="inline-flex items-center rounded-full bg-secondary-light px-2.5 py-1 text-[10px] font-semibold text-primary">
-                      {program.duration}
-                    </span>
+
+                    <p className="text-xs text-primary/80 mb-3">
+                      {program.description}
+                    </p>
+
+                    <div className="flex flex-wrap gap-1.5 mb-3">
+                      <span className="inline-flex items-center rounded-full border border-border bg-background px-2 py-0.5 text-[10px] text-primary/80">
+                        {program.format}
+                      </span>
+                      {program.instructor && (
+                        <span className="inline-flex items-center rounded-full border border-border bg-background px-2 py-0.5 text-[10px] text-primary/80">
+                          {program.instructor}
+                        </span>
+                      )}
+                      {program.price > 0 && (
+                        <span className="inline-flex items-center rounded-full border border-border bg-background px-2 py-0.5 text-[10px] text-primary/80">
+                          ${program.price}
+                        </span>
+                      )}
+                    </div>
                   </div>
 
-                  <p className="text-xs text-primary/80 mb-3">
-                    {program.description}
-                  </p>
-
-                  <div className="flex flex-wrap gap-1.5 mb-3">
-                    <span className="inline-flex items-center rounded-full border border-border bg-background px-2 py-0.5 text-[10px] text-primary/80">
-                      {program.delivery}
-                    </span>
-                    <span className="inline-flex items-center rounded-full border border-border bg-background px-2 py-0.5 text-[10px] text-primary/80">
-                      Small cohort-based learning
-                    </span>
+                  <div className="mt-2 flex items-center justify-between gap-2">
+                    <Link
+                      href={{
+                        pathname: "/contact",
+                        query: { program: program.title },
+                      }}
+                      className="inline-flex items-center rounded-full bg-primary text-secondary-light px-3 py-1.5 text-[11px] font-semibold hover:bg-primary-light"
+                    >
+                      Enroll Now
+                    </Link>
                   </div>
-                </div>
-
-                <div className="mt-2 flex items-center justify-between gap-2">
-                  <Link
-                    href={`/programs/${program.id}`}
-                    className="text-[11px] font-semibold text-accent hover:text-accent-light"
-                  >
-                    View details
-                  </Link>
-                  <Link
-                    href={{
-                      pathname: "/contact",
-                      query: { program: program.title },
-                    }}
-                    className="inline-flex items-center rounded-full bg-primary text-secondary-light px-3 py-1.5 text-[11px] font-semibold hover:bg-primary-light"
-                  >
-                    Enroll Now
-                  </Link>
-                </div>
-              </article>
-            ))}
-
-            {filteredPrograms.length === 0 && (
+                </article>
+              ))
+            ) : (
               <p className="text-sm text-primary/70">
                 No programs found in this category right now. Please check back
                 soon or contact our team for guidance.
