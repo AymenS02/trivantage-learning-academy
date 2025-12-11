@@ -11,6 +11,7 @@ export default function AdminDashboard() {
     totalCourses: 0,
     totalUsers: 0,
     publishedCourses: 0,
+    pendingEnrollments: 0,
   });
   const [loading, setLoading] = useState(true);
 
@@ -34,13 +35,15 @@ export default function AdminDashboard() {
 
   const fetchStats = async () => {
     try {
-      const [coursesRes, usersRes] = await Promise.all([
+      const [coursesRes, usersRes, enrollmentsRes] = await Promise.all([
         fetch("/api/courses?limit=1000"),
         fetch("/api/users?limit=1000"),
+        fetch("/api/enrollment-requests?status=pending&limit=1000"),
       ]);
 
       const coursesData = await coursesRes.json();
       const usersData = await usersRes.json();
+      const enrollmentsData = await enrollmentsRes.json();
 
       if (coursesData.success && usersData.success) {
         const publishedCount = coursesData.data.filter(
@@ -51,6 +54,7 @@ export default function AdminDashboard() {
           totalCourses: coursesData.data.length,
           totalUsers: usersData.data.length,
           publishedCourses: publishedCount,
+          pendingEnrollments: enrollmentsData.success ? enrollmentsData.data.length : 0,
         });
       }
     } catch (error) {
@@ -94,7 +98,7 @@ export default function AdminDashboard() {
         </div>
 
         {/* Stats Cards */}
-        <div className="grid gap-4 sm:grid-cols-3 mb-8">
+        <div className="grid gap-4 sm:grid-cols-4 mb-8">
           <div className="rounded-2xl border border-border bg-surface p-6 shadow-sm">
             <p className="text-sm text-primary/70 mb-1">Total Courses</p>
             <p className="text-3xl font-semibold text-primary">
@@ -113,6 +117,12 @@ export default function AdminDashboard() {
               {stats.totalUsers}
             </p>
           </div>
+          <div className="rounded-2xl border border-border bg-surface p-6 shadow-sm">
+            <p className="text-sm text-primary/70 mb-1">Pending Enrollments</p>
+            <p className="text-3xl font-semibold text-primary">
+              {stats.pendingEnrollments || 0}
+            </p>
+          </div>
         </div>
 
         {/* Quick Actions */}
@@ -120,13 +130,22 @@ export default function AdminDashboard() {
           <h2 className="text-xl font-semibold text-primary mb-4">
             Quick Actions
           </h2>
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             <Link
               href="/admin/courses"
               className="flex items-center justify-between rounded-lg border border-border bg-background p-4 hover:bg-secondary-light/60 transition-colors"
             >
               <span className="text-sm font-medium text-primary">
                 Manage Courses
+              </span>
+              <span className="text-accent">→</span>
+            </Link>
+            <Link
+              href="/admin/enrollments"
+              className="flex items-center justify-between rounded-lg border border-border bg-background p-4 hover:bg-secondary-light/60 transition-colors"
+            >
+              <span className="text-sm font-medium text-primary">
+                Review Enrollments
               </span>
               <span className="text-accent">→</span>
             </Link>

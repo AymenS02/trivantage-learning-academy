@@ -1,11 +1,51 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import gsap from "gsap";
 
 export default function AdmissionsPage() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const heroRef = useRef(null);
   const formRef = useRef(null);
+  
+  const [courses, setCourses] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
+  const [selectedCourse, setSelectedCourse] = useState("");
+
+  useEffect(() => {
+    fetchCourses();
+  }, []);
+
+  useEffect(() => {
+    // Pre-select course if coming from programs page
+    const programParam = searchParams.get('program');
+    if (programParam && courses.length > 0) {
+      const course = courses.find(c => c.title === programParam);
+      if (course) {
+        setSelectedCourse(course._id);
+      }
+    }
+  }, [searchParams, courses]);
+
+  const fetchCourses = async () => {
+    try {
+      const response = await fetch("/api/courses?status=published&limit=1000");
+      const data = await response.json();
+
+      if (data.success) {
+        setCourses(data.data);
+      }
+    } catch (error) {
+      console.error("Error fetching courses:", error);
+      setError("Failed to load courses");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     if (!heroRef.current || !formRef.current) return;
@@ -30,11 +70,73 @@ export default function AdmissionsPage() {
     return () => ctx.revert();
   }, []);
 
-  // TODO: replace with real onSubmit handler / API route
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // For now just log:
-    console.log("Admissions form submitted");
+    setSubmitting(true);
+    setError("");
+
+    const formData = new FormData(e.target);
+    const data = {
+      firstName: formData.get("firstName"),
+      lastName: formData.get("lastName"),
+      email: formData.get("email"),
+      phone: formData.get("phone"),
+      addressMultiline: formData.get("addressMultiline"),
+      country: formData.get("country"),
+      city: formData.get("city"),
+      address: formData.get("address"),
+      postalCode: formData.get("postalCode"),
+      gender: formData.get("gender"),
+      immigrationStatus: formData.get("immigrationStatus"),
+      countryOfOrigin: formData.get("countryOfOrigin"),
+      arrivalDate: formData.get("arrivalDate"),
+      workExperience: formData.get("workExperience"),
+      educationBackground: formData.get("educationBackground"),
+      attendedLinc: formData.get("attendedLinc"),
+      attendedLincDetails: formData.get("attendedLincDetails"),
+      languageCompanion: formData.get("languageCompanion"),
+      dateIntake: formData.get("dateIntake"),
+      assessmentDate: formData.get("assessmentDate"),
+      clbListening: formData.get("clbListening"),
+      clbSpeaking: formData.get("clbSpeaking"),
+      clbReading: formData.get("clbReading"),
+      clbWriting: formData.get("clbWriting"),
+      selectedCourse: formData.get("selectedCourse"),
+      specialNeeds: formData.get("specialNeeds"),
+      consentName: formData.get("consentName"),
+      consentDate: formData.get("consentDate"),
+    };
+
+    // Add userId if user is logged in
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      const userData = JSON.parse(storedUser);
+      data.userId = userData._id;
+    }
+
+    try {
+      const response = await fetch("/api/enrollment-requests", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        alert("Enrollment request submitted successfully! You will be notified once your application is reviewed.");
+        router.push("/programs");
+      } else {
+        setError(result.error || "Failed to submit enrollment request");
+      }
+    } catch (error) {
+      console.error("Error submitting enrollment:", error);
+      setError("An error occurred while submitting your request");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -399,124 +501,67 @@ export default function AdmissionsPage() {
           {/* Program Selection */}
           <section className="border-t border-border pt-6">
             <h2 className="text-sm sm:text-base font-semibold text-primary mb-4">
-              Program Selection
+              Course Selection <span className="text-error">*</span>
             </h2>
 
-            {/* Newcomers / Settlement */}
-            <div className="mb-4">
-              <p className="font-semibold text-primary text-xs mb-2">
-                Newcomers / Settlement &amp; Integration
-              </p>
-              <div className="space-y-2">
-                {[
-                  "Computer Literacy - $299 + HST",
-                  "Career Pathway/Job-Readiness Workshops - $299 + HST",
-                  "English as a Second Language $250 + HST monthly for 3 months / $225 + HST monthly for 6 months",
-                  "Financial Literacy for Newcomers - $299 + HST",
-                  "Civic Engagement Pathway to Citizenship Courses - $299 + HST",
-                  "IELTS - International English Language Testing System (TBD)",
-                ].map((label) => (
-                  <label
-                    key={label}
-                    className="flex items-start gap-2 text-xs sm:text-sm"
-                  >
-                    <input
-                      type="checkbox"
-                      name="programNewcomers"
-                      value={label}
-                      className="mt-1 h-3 w-3 text-primary"
-                    />
-                    <span>{label}</span>
-                  </label>
-                ))}
+            {error && (
+              <div className="mb-4 rounded-lg border border-error bg-error/10 px-4 py-3 text-sm text-error">
+                {error}
               </div>
-            </div>
+            )}
 
-            {/* Healthcare & Community */}
-            <div className="mb-4">
-              <p className="font-semibold text-primary text-xs mb-2">
-                Healthcare &amp; Community Courses
+            {loading ? (
+              <p className="text-sm text-primary/70">Loading courses...</p>
+            ) : courses.length === 0 ? (
+              <p className="text-sm text-primary/70">
+                No courses available at the moment. Please check back later.
               </p>
-              <div className="space-y-2">
-                {[
-                  "Gentle Persuasive Approach (GPA) - $150 + HST each ($1299 for 10+ group + HST)",
-                  "Palliative Care - PSW - $299 + HST",
-                  "Analytical Testing Laboratory Equipment Training (TBD)",
-                  "IENs - Internationally Educated Nurses (TBD)",
-                ].map((label) => (
-                  <label
-                    key={label}
-                    className="flex items-start gap-2 text-xs sm:text-sm"
-                  >
-                    <input
-                      type="checkbox"
-                      name="programHealthcare"
-                      value={label}
-                      className="mt-1 h-3 w-3 text-primary"
-                    />
-                    <span>{label}</span>
-                  </label>
-                ))}
+            ) : (
+              <div className="space-y-3">
+                <p className="text-xs text-primary/80 mb-3">
+                  Please select the course you wish to enroll in:
+                </p>
+                <div className="space-y-2 max-h-96 overflow-y-auto">
+                  {courses.map((course) => (
+                    <label
+                      key={course._id}
+                      className={[
+                        "flex items-start gap-3 rounded-lg border p-3 cursor-pointer transition-all",
+                        selectedCourse === course._id
+                          ? "border-primary bg-primary/5"
+                          : "border-border bg-background hover:border-primary/50",
+                      ].join(" ")}
+                    >
+                      <input
+                        type="radio"
+                        name="selectedCourse"
+                        value={course._id}
+                        checked={selectedCourse === course._id}
+                        onChange={(e) => setSelectedCourse(e.target.value)}
+                        required
+                        className="mt-1 h-4 w-4 text-primary"
+                      />
+                      <div className="flex-1">
+                        <div className="flex items-start justify-between gap-2 mb-1">
+                          <p className="text-sm font-semibold text-primary">
+                            {course.title}
+                          </p>
+                          <span className="inline-flex items-center rounded-full bg-secondary-light px-2.5 py-0.5 text-xs font-semibold text-primary whitespace-nowrap">
+                            ${course.price}
+                          </span>
+                        </div>
+                        <p className="text-xs text-primary/70 mb-1">
+                          {course.category} • {course.duration} • {course.format}
+                        </p>
+                        <p className="text-xs text-primary/80">
+                          {course.description}
+                        </p>
+                      </div>
+                    </label>
+                  ))}
+                </div>
               </div>
-            </div>
-
-            {/* Business Programs */}
-            <div className="mb-4">
-              <p className="font-semibold text-primary text-xs mb-2">
-                Business Programs
-              </p>
-              <div className="space-y-2">
-                {[
-                  "Accounting & Bookkeeping Level 1 & 2 - $375 each level + HST",
-                  "QuickBooks Online Basics Level 1 & Level 2 - $375 each level + HST",
-                  "Payroll Administration - $575 + HST",
-                ].map((label) => (
-                  <label
-                    key={label}
-                    className="flex items-start gap-2 text-xs sm:text-sm"
-                  >
-                    <input
-                      type="checkbox"
-                      name="programBusiness"
-                      value={label}
-                      className="mt-1 h-3 w-3 text-primary"
-                    />
-                    <span>{label}</span>
-                  </label>
-                ))}
-              </div>
-            </div>
-
-            {/* Micro-credentials */}
-            <div>
-              <p className="font-semibold text-primary text-xs mb-2">
-                Micro-credentials &amp; Professional Development
-              </p>
-              <div className="space-y-2">
-                {[
-                  "Lean Six Sigma - $250 each level + HST",
-                  "Emotional Intelligence - $350 + HST",
-                  "Certified Coach - $2100 + HST",
-                  "Project Management - $2100 + HST",
-                  "Adult Education Certification - $2100 + HST",
-                  "WHMIS - $375 + HST",
-                  "Food Handlers Course - $150 + HST",
-                ].map((label) => (
-                  <label
-                    key={label}
-                    className="flex items-start gap-2 text-xs sm:text-sm"
-                  >
-                    <input
-                      type="checkbox"
-                      name="programMicro"
-                      value={label}
-                      className="mt-1 h-3 w-3 text-primary"
-                    />
-                    <span>{label}</span>
-                  </label>
-                ))}
-              </div>
-            </div>
+            )}
           </section>
 
           {/* Special Needs & Consent */}
@@ -594,9 +639,10 @@ export default function AdmissionsPage() {
 
             <button
               type="submit"
-              className="inline-flex items-center justify-center rounded-full bg-primary text-secondary-light px-6 py-2.5 text-xs sm:text-sm font-semibold hover:bg-primary-light transition"
+              disabled={submitting || loading}
+              className="inline-flex items-center justify-center rounded-full bg-primary text-secondary-light px-6 py-2.5 text-xs sm:text-sm font-semibold hover:bg-primary-light transition disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Submit
+              {submitting ? "Submitting..." : "Submit"}
             </button>
           </section>
         </form>
