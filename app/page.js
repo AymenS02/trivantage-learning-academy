@@ -235,7 +235,7 @@ export default function HomePage() {
                   80+ years collective expertise
                 </p>
                 <p className="text-xs text-secondary-light/90">
-                  Healthcare • Education • Leadership
+                  Healthcare • Leadership • Newcomer Pathways
                 </p>
               </div>
 

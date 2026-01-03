@@ -15,10 +15,9 @@ const CourseSchema = new mongoose.Schema(
       maxlength: [1000, 'Course description cannot be more than 1000 characters'],
     },
     category: {
-      type: String,
-      required: [true, 'Please provide a course category'],
-      enum: ['Healthcare', 'Leadership', 'Newcomer Pathways', 'Other'],
-      default: 'Other',
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Category',
+      required: false,
     },
     duration: {
       type: String,

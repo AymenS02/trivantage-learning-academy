@@ -7,13 +7,14 @@ import { useRouter } from "next/navigation";
 export default function AdminCoursesPage() {
   const router = useRouter();
   const [courses, setCourses] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [editingCourse, setEditingCourse] = useState(null);
   const [formData, setFormData] = useState({
     title: "",
     description: "",
-    category: "Healthcare",
+    category: "",
     duration: "",
     format: "Virtual",
     instructor: "",
@@ -41,8 +42,28 @@ export default function AdminCoursesPage() {
       return;
     }
 
+    fetchCategories();
     fetchCourses();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router]);
+
+  const fetchCategories = async () => {
+    try {
+      const response = await fetch("/api/categories");
+      const data = await response.json();
+
+      if (data.success) {
+        setCategories(data.data);
+        // Set default category if form doesn't have one and we're not editing
+        if (!editingCourse && data.data.length > 0 && !formData.category) {
+          const defaultCategory = data.data.find(cat => cat.name === "Other") || data.data[0];
+          setFormData(prev => ({ ...prev, category: defaultCategory._id }));
+        }
+      }
+    } catch (error) {
+      console.error("Error fetching categories:", error);
+    }
+  };
 
   const fetchCourses = async () => {
     try {
@@ -109,7 +130,7 @@ export default function AdminCoursesPage() {
     setFormData({
       title: course.title,
       description: course.description,
-      category: course.category,
+      category: course.category?._id || "",
       duration: course.duration,
       format: course.format,
       instructor: course.instructor || "",
@@ -149,10 +170,11 @@ export default function AdminCoursesPage() {
   };
 
   const resetForm = () => {
+    const defaultCategory = categories.find(cat => cat.name === "Other") || categories[0];
     setFormData({
       title: "",
       description: "",
-      category: "Healthcare",
+      category: defaultCategory?._id || "",
       duration: "",
       format: "Virtual",
       instructor: "",
@@ -270,10 +292,12 @@ export default function AdminCoursesPage() {
                     required
                     className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-accent"
                   >
-                    <option value="Healthcare">Healthcare</option>
-                    <option value="Leadership">Leadership</option>
-                    <option value="Newcomer Pathways">Newcomer Pathways</option>
-                    <option value="Other">Other</option>
+                    <option value="">Select a category</option>
+                    {categories.map((category) => (
+                      <option key={category._id} value={category._id}>
+                        {category.name}
+                      </option>
+                    ))}
                   </select>
                 </div>
 
@@ -455,7 +479,7 @@ export default function AdminCoursesPage() {
                     {course.description}
                   </p>
                   <div className="flex flex-wrap gap-2 text-xs text-primary/70">
-                    <span>Category: {course.category}</span>
+                    <span>Category: {course.category?.name || 'Other'}</span>
                     <span>•</span>
                     <span>Duration: {course.duration}</span>
                     <span>•</span>

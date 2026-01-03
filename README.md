@@ -2,7 +2,13 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## Getting Started
 
-First, run the development server:
+First, install dependencies:
+
+```bash
+npm install
+```
+
+Then, run the development server:
 
 ```bash
 npm run dev
@@ -19,6 +25,38 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+
+## First-Time Setup
+
+### Initialize Categories
+
+Before using the application, you need to seed the program categories:
+
+```bash
+# Start the dev server
+npm run dev
+
+# In another terminal or browser, make a POST request:
+curl -X POST http://localhost:3000/api/categories/seed
+```
+
+Or using the browser console on any page:
+```javascript
+fetch('/api/categories/seed', { method: 'POST' })
+  .then(r => r.json())
+  .then(data => console.log(data))
+```
+
+This creates the default categories (Healthcare, Leadership, Newcomer Pathways, Other) and migrates any existing courses.
+
+### Verify Setup
+
+Check that categories were created:
+```bash
+curl http://localhost:3000/api/categories
+```
+
+For more details, see [CATEGORY_MIGRATION.md](./CATEGORY_MIGRATION.md).
 
 ## Learn More
 
