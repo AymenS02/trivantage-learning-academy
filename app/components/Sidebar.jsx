@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 
-export default function Sidebar({ categories = [], activeFilter = "all", onFilterChange }) {
+export default function Sidebar({ categories = [], activeFilter = "all", onFilterChange = () => {} }) {
   return (
     <aside className="w-full md:w-64 border border-border bg-surface rounded-2xl p-4 text-sm text-primary">
       <h2 className="text-xs font-semibold uppercase tracking-[0.18em] text-primary/70 mb-3">
