@@ -77,9 +77,8 @@ export async function DELETE(request, { params }) {
       );
     }
 
-    // Check if trying to delete the "Other" category
-    const categoryToDelete = await Category.findById(id);
-    if (categoryToDelete && categoryToDelete.name === 'Other') {
+    // Prevent deletion of "Other" category
+    if (otherCategory._id.toString() === id) {
       return NextResponse.json(
         { success: false, error: 'Cannot delete the default "Other" category' },
         { status: 400 }

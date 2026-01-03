@@ -41,9 +41,16 @@ export async function POST() {
         );
       }
 
-      // Set "Other" as default for courses with no category or unmatched categories
+      // Set "Other" as default for courses with no category, null, or any unmatched string categories
+      // This uses $type: 2 to match string types, ensuring we catch all string-based categories
       await Course.updateMany(
-        { $or: [{ category: { $exists: false } }, { category: null }] },
+        { 
+          $or: [
+            { category: { $exists: false } }, 
+            { category: null },
+            { category: { $type: 2 } } // Type 2 is string in MongoDB
+          ] 
+        },
         { category: otherCategory._id }
       );
     }
