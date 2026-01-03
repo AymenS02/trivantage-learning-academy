@@ -44,6 +44,7 @@ export default function AdminCoursesPage() {
 
     fetchCategories();
     fetchCourses();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router]);
 
   const fetchCategories = async () => {
