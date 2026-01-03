@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import dbConnect from '@/lib/mongodb';
 import Course from '@/models/Course';
+import Category from '@/models/Category';
 
 // GET all courses
 export async function GET(request) {
@@ -20,6 +21,7 @@ export async function GET(request) {
     if (status) filter.status = status;
 
     const courses = await Course.find(filter)
+      .populate('category')
       .sort({ createdAt: -1 })
       .limit(limit)
       .skip(skip);
@@ -50,7 +52,19 @@ export async function POST(request) {
     await dbConnect();
 
     const body = await request.json();
+    
+    // If no category is provided, assign to "Other" category
+    if (!body.category) {
+      const otherCategory = await Category.findOne({ name: 'Other' });
+      if (otherCategory) {
+        body.category = otherCategory._id;
+      }
+    }
+    
     const course = await Course.create(body);
+    
+    // Populate category before returning
+    await course.populate('category');
 
     return NextResponse.json(
       { success: true, data: course },
