@@ -172,7 +172,11 @@ export default function ProgramsPage() {
       <section className="max-w-6xl mx-auto px-6 py-10 lg:py-12 grid gap-8 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,2fr)]">
         {/* Sidebar */}
         <div className="order-2 lg:order-1">
-          <Sidebar />
+          <Sidebar 
+            categories={categories}
+            activeFilter={activeFilter}
+            onFilterChange={setActiveFilter}
+          />
         </div>
 
         {/* Main content */}
