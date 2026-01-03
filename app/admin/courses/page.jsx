@@ -54,7 +54,7 @@ export default function AdminCoursesPage() {
 
       if (data.success) {
         setCategories(data.data);
-        // Set default category if form doesn't have one and we're not editing
+        // Set default category to "Other" if form doesn't have one and we're not editing
         if (!editingCourse && data.data.length > 0 && !formData.category) {
           const defaultCategory = data.data.find(cat => cat.name === "Other") || data.data[0];
           setFormData(prev => ({ ...prev, category: defaultCategory._id }));

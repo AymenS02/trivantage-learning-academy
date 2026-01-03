@@ -141,6 +141,15 @@ export default function AdminDashboard() {
               <span className="text-accent">→</span>
             </Link>
             <Link
+              href="/admin/categories"
+              className="flex items-center justify-between rounded-lg border border-border bg-background p-4 hover:bg-secondary-light/60 transition-colors"
+            >
+              <span className="text-sm font-medium text-primary">
+                Manage Categories
+              </span>
+              <span className="text-accent">→</span>
+            </Link>
+            <Link
               href="/admin/enrollments"
               className="flex items-center justify-between rounded-lg border border-border bg-background p-4 hover:bg-secondary-light/60 transition-colors"
             >
