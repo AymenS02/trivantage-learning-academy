@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
+const DEFAULT_CATEGORY_NAME = "Other";
+
 export default function AdminCategoriesPage() {
   const router = useRouter();
   const [categories, setCategories] = useState([]);
@@ -129,14 +131,14 @@ export default function AdminCategoriesPage() {
   };
 
   const handleDelete = async (categoryId, categoryName) => {
-    if (categoryName === "Other") {
-      setError('Cannot delete the default "Other" category');
+    if (categoryName === DEFAULT_CATEGORY_NAME) {
+      setError(`Cannot delete the default "${DEFAULT_CATEGORY_NAME}" category`);
       return;
     }
 
     if (
       !confirm(
-        `Are you sure you want to delete this category? All courses in this category will be moved to "Other".`
+        `Are you sure you want to delete this category? All courses in this category will be moved to "${DEFAULT_CATEGORY_NAME}".`
       )
     ) {
       return;
@@ -294,7 +296,7 @@ export default function AdminCategoriesPage() {
                     <h3 className="text-base font-semibold text-primary">
                       {category.name}
                     </h3>
-                    {category.name === "Other" && (
+                    {category.name === DEFAULT_CATEGORY_NAME && (
                       <span className="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium bg-blue-100 text-blue-800">
                         Default
                       </span>
@@ -319,7 +321,7 @@ export default function AdminCategoriesPage() {
                   >
                     Edit
                   </button>
-                  {category.name !== "Other" && (
+                  {category.name !== DEFAULT_CATEGORY_NAME && (
                     <button
                       onClick={() =>
                         handleDelete(category._id, category.name)

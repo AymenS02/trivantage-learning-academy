@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
+const DEFAULT_CATEGORY_NAME = "Other";
+
 export default function AdminCoursesPage() {
   const router = useRouter();
   const [courses, setCourses] = useState([]);
@@ -56,7 +58,7 @@ export default function AdminCoursesPage() {
         setCategories(data.data);
         // Set default category to "Other" if form doesn't have one and we're not editing
         if (!editingCourse && data.data.length > 0 && !formData.category) {
-          const defaultCategory = data.data.find(cat => cat.name === "Other") || data.data[0];
+          const defaultCategory = data.data.find(cat => cat.name === DEFAULT_CATEGORY_NAME) || data.data[0];
           setFormData(prev => ({ ...prev, category: defaultCategory._id }));
         }
       }
@@ -170,7 +172,7 @@ export default function AdminCoursesPage() {
   };
 
   const resetForm = () => {
-    const defaultCategory = categories.find(cat => cat.name === "Other") || categories[0];
+    const defaultCategory = categories.find(cat => cat.name === DEFAULT_CATEGORY_NAME) || categories[0];
     setFormData({
       title: "",
       description: "",
@@ -479,7 +481,7 @@ export default function AdminCoursesPage() {
                     {course.description}
                   </p>
                   <div className="flex flex-wrap gap-2 text-xs text-primary/70">
-                    <span>Category: {course.category?.name || 'Other'}</span>
+                    <span>Category: {course.category?.name || DEFAULT_CATEGORY_NAME}</span>
                     <span>•</span>
                     <span>Duration: {course.duration}</span>
                     <span>•</span>
