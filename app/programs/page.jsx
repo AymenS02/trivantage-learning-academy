@@ -8,17 +8,10 @@ import Sidebar from "../components/Sidebar";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const FILTERS = [
-  { key: "all", label: "All Programs" },
-  { key: "Healthcare", label: "Healthcare" },
-  { key: "Leadership", label: "Leadership" },
-  { key: "Newcomer Pathways", label: "Newcomer Pathways" },
-  { key: "Other", label: "Other" },
-];
-
 export default function ProgramsPage() {
   const [activeFilter, setActiveFilter] = useState("all");
   const [programs, setPrograms] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(null);
   const [enrollments, setEnrollments] = useState([]);
@@ -31,6 +24,7 @@ export default function ProgramsPage() {
     if (storedUser) {
       setUser(JSON.parse(storedUser));
     }
+    fetchCategories();
     fetchCourses();
   }, []);
 
@@ -40,6 +34,19 @@ export default function ProgramsPage() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
+
+  const fetchCategories = async () => {
+    try {
+      const response = await fetch("/api/categories");
+      const data = await response.json();
+
+      if (data.success) {
+        setCategories(data.data);
+      }
+    } catch (error) {
+      console.error("Error fetching categories:", error);
+    }
+  };
 
   const fetchCourses = async () => {
     try {
@@ -84,7 +91,7 @@ export default function ProgramsPage() {
 
   const filteredPrograms = useMemo(() => {
     if (activeFilter === "all") return programs;
-    return programs.filter((p) => p.category === activeFilter);
+    return programs.filter((p) => p.category?._id === activeFilter);
   }, [activeFilter, programs]);
 
   // Hero entrance animation
@@ -172,13 +179,28 @@ export default function ProgramsPage() {
         <div className="order-1 lg:order-2 space-y-6">
           {/* Filters */}
           <div className="flex flex-wrap items-center gap-2">
-            {FILTERS.map((filter) => {
-              const active = activeFilter === filter.key;
+            {/* All Programs filter */}
+            <button
+              type="button"
+              onClick={() => setActiveFilter("all")}
+              className={[
+                "rounded-full border px-3 py-1.5 text-xs font-medium transition-colors",
+                activeFilter === "all"
+                  ? "border-primary bg-primary text-secondary-light"
+                  : "border-border bg-background text-primary hover:bg-secondary-light/60",
+              ].join(" ")}
+            >
+              All Programs
+            </button>
+            
+            {/* Dynamic category filters */}
+            {categories.map((category) => {
+              const active = activeFilter === category._id;
               return (
                 <button
-                  key={filter.key}
+                  key={category._id}
                   type="button"
-                  onClick={() => setActiveFilter(filter.key)}
+                  onClick={() => setActiveFilter(category._id)}
                   className={[
                     "rounded-full border px-3 py-1.5 text-xs font-medium transition-colors",
                     active
@@ -186,7 +208,7 @@ export default function ProgramsPage() {
                       : "border-border bg-background text-primary hover:bg-secondary-light/60",
                   ].join(" ")}
                 >
-                  {filter.label}
+                  {category.name}
                 </button>
               );
             })}
@@ -213,7 +235,7 @@ export default function ProgramsPage() {
                           {program.title}
                         </h2>
                         <p className="text-[11px] text-primary/70">
-                          {program.category}
+                          {program.category?.name || 'Other'}
                         </p>
                       </div>
                       <span className="inline-flex items-center rounded-full bg-secondary-light px-2.5 py-1 text-[10px] font-semibold text-primary">
