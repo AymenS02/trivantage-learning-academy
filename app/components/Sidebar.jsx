@@ -1,40 +1,45 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 
-export default function Sidebar() {
-  const pathname = usePathname();
-
-  const items = [
-    { href: "/programs", label: "All Programs" },
-    { href: "/programs/healthcare", label: "Healthcare" },
-    { href: "/programs/leadership", label: "Leadership" },
-    { href: "/programs/newcomers", label: "Newcomer Pathways" },
-    { href: "/programs/short-courses", label: "Short Courses" },
-  ];
-
+export default function Sidebar({ categories = [], activeFilter = "all", onFilterChange = () => {} }) {
   return (
     <aside className="w-full md:w-64 border border-border bg-surface rounded-2xl p-4 text-sm text-primary">
       <h2 className="text-xs font-semibold uppercase tracking-[0.18em] text-primary/70 mb-3">
         Programs Overview
       </h2>
       <nav className="flex flex-col gap-1">
-        {items.map((item) => {
-          const active = pathname === item.href;
+        {/* All Programs filter */}
+        <button
+          type="button"
+          onClick={() => onFilterChange("all")}
+          className={[
+            "rounded-lg px-3 py-2 text-sm transition-colors text-left",
+            activeFilter === "all"
+              ? "bg-primary text-secondary-light"
+              : "hover:bg-secondary-light/60 hover:text-primary",
+          ].join(" ")}
+        >
+          All Programs
+        </button>
+        
+        {/* Dynamic category filters */}
+        {categories.map((category) => {
+          const active = activeFilter === category._id;
           return (
-            <Link
-              key={item.href}
-              href={item.href}
+            <button
+              key={category._id}
+              type="button"
+              onClick={() => onFilterChange(category._id)}
               className={[
-                "rounded-lg px-3 py-2 text-sm transition-colors",
+                "rounded-lg px-3 py-2 text-sm transition-colors text-left",
                 active
                   ? "bg-primary text-secondary-light"
                   : "hover:bg-secondary-light/60 hover:text-primary",
               ].join(" ")}
             >
-              {item.label}
-            </Link>
+              {category.name}
+            </button>
           );
         })}
       </nav>
