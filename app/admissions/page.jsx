@@ -551,7 +551,7 @@ function AdmissionsForm() {
                           </span>
                         </div>
                         <p className="text-xs text-primary/70 mb-1">
-                          {course.category} • {course.duration} • {course.format}
+                          {course.category?.name || 'Other'} • {course.duration} • {course.format}
                         </p>
                         <p className="text-xs text-primary/80">
                           {course.description}
