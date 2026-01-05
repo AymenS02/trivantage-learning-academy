@@ -239,7 +239,7 @@ export default function HomePage() {
                 </p>
               </div>
 
-              <div className="absolute -top-6 -right-4 w-32 sm:w-36 rounded-2xl border border-secondary/40 bg-secondary-dark/90 p-2. 5 text-xs text-primary-dark shadow-lg shadow-primary-dark/60">
+              <div className="absolute -top-6 -right-4 w-32 sm:w-36 rounded-2xl border border-secondary/40 bg-secondary-dark/90 p-2.5 text-xs text-primary-dark shadow-lg shadow-primary-dark/60">
                 <p className="font-semibold">Virtual Training</p>
                 <p className="text-[11px]">
                   Certificate courses for your future. 
