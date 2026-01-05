@@ -87,8 +87,8 @@ export default function ResumeCareerPage() {
           </h1>
           <p className="max-w-2xl text-sm text-primary/80">
             Take your career to the next level with our comprehensive resume
-            and career development services. Whether you&apos;re starting your job
-            search, refining your resume, or preparing for interviews, we&apos;re here
+            and career development services. Whether you&rsquo;re starting your job
+            search, refining your resume, or preparing for interviews, we&rsquo;re here
             to help you succeed.
           </p>
         </div>
@@ -119,7 +119,7 @@ export default function ResumeCareerPage() {
 
               <div className="mt-6 pl-16">
                 <h3 className="text-sm font-semibold text-primary mb-3 uppercase tracking-wider">
-                  What You&apos;ll Learn
+                  What You&rsquo;ll Learn
                 </h3>
                 <ul className="space-y-2">
                   {category.features.map((feature) => (
