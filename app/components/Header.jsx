@@ -28,6 +28,7 @@ export default function Header() {
     { href: "/about", label: "About" },
     { href: "/programs", label: "Programs" },
     { href: "/admissions", label: "Admissions" },
+    { href: "/resume-career", label: "Resume & Career Development" },
     { href: "/contact", label: "Contact" },
   ];
 
